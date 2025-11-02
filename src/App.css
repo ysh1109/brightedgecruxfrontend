@@ -1,0 +1,39 @@
+
+
+
+
+.myInput {
+  width: 400px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+.input-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column
+}
+
+@media (max-width: 1024px) {
+  .input-container {
+    width: 80%;
+  }
+}
+
+.metric-cards-container{
+  display: flex;
+  gap: 6px;
+  background: white;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.summary-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+
