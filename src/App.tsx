@@ -79,7 +79,7 @@ function App() {
   return (
    <div style={{ padding: 32, display:'flex', flexDirection:'column', alignItems:'center', height:'100vh', overflowY:'auto' }}>
 
-      <h1>Brightend Crux</h1>
+      <h1>BrightEdge Crux</h1>
 
       <div className='input-container'>
         <div style={{ marginBottom: "8px", padding: 4, paddingInline: 10 }}>
