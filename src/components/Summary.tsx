@@ -18,7 +18,7 @@ const barChartColors = {
     cls: "#FFBB28",
     inp: "#FF8042"
 }
-
+// metric info card
 const Card = ({ title, value }: { title: string, value: number | string | null }) => {
     return (
         <Box sx={{
@@ -46,10 +46,13 @@ const Summary = ({ rows, visibleColumn }: props) => {
     
 
     const [chartData, setChartData] = useState<Record<MetricKey, number | string | null>[]>([])
-    const avg = React.useMemo(() => calculateAverages(rows), [rows])
-    const counts = React.useMemo(() => getSummaryCounts(rows), [rows])
+    //get avg value
+    const avg = React.useMemo(() => calculateAverages(rows), [rows]) 
+    // get total counts of good/ NI(need improvment)/ poor
+    const counts = React.useMemo(() => getSummaryCounts(rows), [rows]) 
     
     useEffect(() => {
+        // prepare only rows with valid data for charts
         const chartDataResult = rows
             .filter(r => r.status === "ok")   // only valid data
             .map(r => ({
@@ -121,6 +124,7 @@ const Summary = ({ rows, visibleColumn }: props) => {
     )
 }
 
+// summary is memo to avoid re-render on every blink
 export default React.memo(Summary, (prev, next) => {
     return prev.rows === next.rows && prev.visibleColumn === next.visibleColumn
 })
