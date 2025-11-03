@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 const BarChartContainer = ({ data, metric, color }: any) => {
     return (
         <div style={{ width: "100%", height: 300 }}>
-            <h3>{metric.toUpperCase()}</h3>
+            <h2>{metric.toUpperCase()}</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
                     <XAxis dataKey="url" />

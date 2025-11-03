@@ -1,14 +1,14 @@
-import {  useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import './App.css'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { api } from './api';
 import DataTable from './components/DataTable';
 import type { CruxRow } from './types/crux';
-import DescriptionModal from './components/DescriptionModal';
 import FilterOptions from './components/FilterOptions';
-import Summary from './components/Summary';
 import ErrorBoundary from './components/ErrorBoundry';
+const DescriptionModal = React.lazy(() => import("./components/DescriptionModal"));
+const Summary = React.lazy(() => import("./components/Summary"));
 
 function App() {
 
@@ -19,11 +19,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [viewData, setViewData] = useState<CruxRow | null>(null);
   const [open, setOpen] = useState(false);
-  const [visibleColumn, setVisibleColumn] = useState<Record<ColumnKey,boolean>>({
-      'fcp' : true,
-      'lcp': true,
-      'cls' : true,
-      'inp' : true
+  const [visibleColumn, setVisibleColumn] = useState<Record<ColumnKey, boolean>>({
+    'fcp': true,
+    'lcp': true,
+    'cls': true,
+    'inp': true
   })
 
   const handleClose = () => setOpen(false);
@@ -64,20 +64,20 @@ function App() {
     setCruxData(prev => prev.filter(item => item.id !== id));
   };
 
-  const handleColumn = (selectedlist : string[]) => {
-      let visibleColumnTemp : any  = {...visibleColumn}
+  const handleColumn = (selectedlist: string[]) => {
+    let visibleColumnTemp: any = { ...visibleColumn }
 
-      Object.keys(visibleColumn).forEach((col : string)=> {
-          
-            visibleColumnTemp[col] = selectedlist.includes(col)
-          
-      })
+    Object.keys(visibleColumn).forEach((col: string) => {
 
-      setVisibleColumn(visibleColumnTemp)
+      visibleColumnTemp[col] = selectedlist.includes(col)
+
+    })
+
+    setVisibleColumn(visibleColumnTemp)
   }
 
   return (
-   <div style={{ padding: 32, display:'flex', flexDirection:'column', alignItems:'center', height:'100vh', overflowY:'auto' }}>
+    <div style={{ padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflowY: 'auto' }}>
 
       <h1>BrightEdge CRUX Vitals Dashboard</h1>
 
@@ -88,7 +88,7 @@ function App() {
           </span>
         </div>
 
-        <div style={{display:'flex', gap:12}}>
+        <div style={{ display: 'flex', gap: 12 }}>
           <TextField
             id="outlined-textarea"
             placeholder="Enter URLs each on new line"
@@ -100,8 +100,8 @@ function App() {
             onChange={(e) => setInput(e.target.value)}
           />
 
-          <div style={{ display:'flex', alignItems:'center'}}>
-            <Button variant="contained" sx={{ textTransform: 'none', height:80, borderRadius:4 }} onClick={handleSubmit}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button variant="contained" sx={{ textTransform: 'none', height: 80, borderRadius: 4 }} onClick={handleSubmit}>
               {isLoading ? "Loading..." : "Search"}
             </Button>
           </div>
@@ -112,7 +112,7 @@ function App() {
 
 
       <div className='table-section' style={{ width: '80%', marginTop: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between',alignItems:'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             {cruxData.length > 0 && <FilterOptions handleColumn={handleColumn} />}
           </div>
@@ -125,14 +125,31 @@ function App() {
         </div>
         <div style={{ marginTop: 16, width: '100%' }}>
           <ErrorBoundary>
-          <DataTable onDelete={handleDeleteRow} visibleColumn={visibleColumn} rows={cruxData} isLoading={isLoading} onView={handleView} />
+            <DataTable onDelete={handleDeleteRow} visibleColumn={visibleColumn} rows={cruxData} isLoading={isLoading} onView={handleView} />
           </ErrorBoundary>
-          {cruxData.length > 0 ? <ErrorBoundary><Summary visibleColumn={visibleColumn}  rows={cruxData}  /></ErrorBoundary> : <></>}
+          {cruxData.length > 0 && (
+            <ErrorBoundary>
+              <Suspense fallback={<div style={{ color: "white" }}>Loading summary...</div>}>
+                <Summary visibleColumn={visibleColumn} rows={cruxData} />
+              </Suspense>
+            </ErrorBoundary>
+          )}
         </div>
 
       </div>
 
-      {open && <ErrorBoundary><DescriptionModal visibleColumn={visibleColumn} handleClose={handleClose} open={open} data={viewData} /></ErrorBoundary>}
+      {open && (
+        <ErrorBoundary>
+          <Suspense fallback={<div style={{ color: "white" }}>Loading details...</div>}>
+            <DescriptionModal
+              visibleColumn={visibleColumn}
+              handleClose={handleClose}
+              open={open}
+              data={viewData}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      )}
     </div>
   )
 }
