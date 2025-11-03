@@ -69,15 +69,15 @@ https://www.loom.com/share/53f7343fcdb84097b805fe37ca7a5c09
 ### Backend
 
 
-cd backend
-npm install
-npm run dev
+-cd backend
+-npm install
+-npm run dev
 
 ### Backend
 
 
-cd frontend
-npm install
-npm run dev
+-cd frontend
+-npm install
+-npm run dev
 
 ```bash
