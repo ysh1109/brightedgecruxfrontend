@@ -14,7 +14,7 @@ import type { CruxRow, MetricKey } from '../types/crux';
 import { colorScale, percent } from '../utils/metricsUtils';
 import TablePagination from '@mui/material/TablePagination';
 
-
+// columns user can hide and show
 type ColumnKey = "fcp" | "lcp" | "cls" | "inp";
 
 type props = {
@@ -31,9 +31,10 @@ const metrics: MetricKey[] = ["fcp", "lcp", "cls", "inp"];
 
 const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) => {
 
+  //pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  // sorting state
   const [sortBy, setSortBy] = useState<keyof CruxRow>("url");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -48,9 +49,10 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
     setPage(0);
   };
 
-
+  //toggle sort
   const handleSort = (col: keyof CruxRow) => {
     if (sortBy === col) {
+      //if already done -> invert direction
       setSortOrder(prev => prev === "asc" ? "desc" : "asc");
     } else {
       setSortBy(col);
