@@ -9,19 +9,20 @@ import Paper from '@mui/material/Paper';
 import LinearProgress from '@mui/material/LinearProgress';
 import Tooltip from "@mui/material/Tooltip";
 import Stack from "@mui/material/Stack";
-import { Button, Skeleton, TableSortLabel } from '@mui/material';
+import { Box, Button, Skeleton, TableFooter, TableSortLabel } from '@mui/material';
 import type { CruxRow, MetricKey } from '../types/crux';
 import { colorScale, percent } from '../utils/metricsUtils';
+import TablePagination from '@mui/material/TablePagination';
 
 
-  type ColumnKey = "fcp" | "lcp" | "cls" | "inp";
+type ColumnKey = "fcp" | "lcp" | "cls" | "inp";
 
 type props = {
   rows: CruxRow[],
   onDelete: (id: string | number) => void,
   isLoading: boolean,
   onView: (row: CruxRow) => void,
-  visibleColumn : Record<ColumnKey,boolean>
+  visibleColumn: Record<ColumnKey, boolean>
 }
 
 const metrics: MetricKey[] = ["fcp", "lcp", "cls", "inp"];
@@ -30,8 +31,23 @@ const metrics: MetricKey[] = ["fcp", "lcp", "cls", "inp"];
 
 const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) => {
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const [sortBy, setSortBy] = useState<keyof CruxRow>("url");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
 
   const handleSort = (col: keyof CruxRow) => {
     if (sortBy === col) {
@@ -85,7 +101,7 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
                 FCP
               </TableSortLabel>
             </TableCell>}
-             {visibleColumn['lcp'] && <TableCell align="right">
+            {visibleColumn['lcp'] && <TableCell align="right">
               <TableSortLabel
                 active={sortBy === "lcp"}
                 direction={sortBy === "lcp" ? sortOrder : "asc"}
@@ -93,17 +109,17 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
               >
                 LCP
               </TableSortLabel>
-            </TableCell> }
-             {visibleColumn['cls'] && <TableCell align="right">
+            </TableCell>}
+            {visibleColumn['cls'] && <TableCell align="right">
               <TableSortLabel
                 active={sortBy === "cls"}
                 direction={sortBy === "cls" ? sortOrder : "asc"}
                 onClick={() => handleSort("cls")}
               >
                 CLS
-              </TableSortLabel> 
+              </TableSortLabel>
             </TableCell>}
-              {visibleColumn['inp'] && <TableCell align="right">
+            {visibleColumn['inp'] && <TableCell align="right">
               <TableSortLabel
                 active={sortBy === "inp"}
                 direction={sortBy === "inp" ? sortOrder : "asc"}
@@ -129,7 +145,7 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
               </TableCell>
             </TableRow>
           ) :
-            sortedRows?.map((row) => (
+            sortedRows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
               <TableRow key={row.id}>
                 <TableCell sx={{
                   maxWidth: 240,        // fix column width
@@ -152,7 +168,7 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
                   )}
                 </TableCell>
                 {metrics.map((metric) => (
-                  visibleColumn[metric] && 
+                  visibleColumn[metric] &&
                   <TableCell key={metric} sx={{ width: 140 }}>
                     <Stack
                       direction={{ xs: "column", md: "row" }}
@@ -205,6 +221,23 @@ const DataTable = ({ rows, onDelete, isLoading, onView, visibleColumn }: props) 
               </TableRow>
             ))}
         </TableBody>
+       <TableFooter>
+  <TableRow>
+    {rows.length > 5 && <TableCell colSpan={100}>  {/* large number → always full width */}
+      <Box sx={{ display:'flex', justifyContent:'flex-end', pr:2 }}>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={sortedRows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
+    </TableCell>}
+  </TableRow>
+</TableFooter>
       </Table>
     </TableContainer>
   );

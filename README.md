@@ -1,74 +1,83 @@
-# React + TypeScript + Vite
+# BrightEdge CRUX Vitals Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a full-stack application that allows users to input multiple URLs and fetch Core Web Vitals data using the official CRUX (Chrome UX Report) API. Results are visualized in a responsive table with color-coded progress bars, detailed view modal, and summary charts.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Repositories
 
-## React Compiler
+| Layer | Repository |
+|-------|------------|
+| Frontend (React + TS + Vite) | https://github.com/ysh1109/brightedgecruxfrontend |
+| Backend (Node + Express + TS) | https://github.com/ysh1109/brightedgecruxbackend |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Feature | Status |
+|--------|--------|
+| Add multiple URLs at once (newline separated) | ✅ |
+| CRUX API Integration | ✅ |
+| Table with sorting + pagination | ✅ |
+| Hide/show specific metrics (FCP/LCP/CLS/INP) | ✅ |
+| Color-coded progress bars per metric | ✅ |
+| View modal for each URL | ✅ |
+| Summary (Averages + Good/NI/Poor counts) | ✅ |
+| Charts for all metrics (Area + Bar charts) | ✅ |
+| pagination will be enabled after row count greater than 5 | ✅ |
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Next Steps (Future Improvements)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Auto-add https:// if user enters domain without protocol → reduce CRUX 400 errors
+- Block duplicate URLs (or merge them) to avoid repeating rows
+- Add slider based filtering for each metric to filter results between min-max values
+- Multi-column sorting (current sorting is single column only)
+- Export to CSV or Download results as Excel
+- Persist data in localStorage → so results remain even after refresh
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Frontend**: React + TypeScript + Vite + MUI + Recharts
+- **Backend**: Node.js + Express.js + TypeScript
+- **API**: Google CRUX (Chrome UX Report API)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
+## video description
+
+https://www.loom.com/share/53f7343fcdb84097b805fe37ca7a5c09
+
+---
+
+## Known issues 
+
+-CRUX API sometimes returns 400 for URLs without protocol.
+ Example: youtube.com → must be https://youtube.com.
+
+-Duplicate URL insertion is currently allowed (same URL can be added multiple times).
+
+-Filtering + sorting currently works one column at a time (no multi-column sorting).
+
+-Charts are rendered only for successful URLs (status = ok), failed ones are excluded.
+
+## How to Run Locally
+
+### Backend
+
+
+cd backend
+npm install
+npm run dev
+
+### Backend
+
+
+cd frontend
+npm install
+npm run dev
+
+```bash

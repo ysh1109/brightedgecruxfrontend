@@ -79,7 +79,7 @@ function App() {
   return (
    <div style={{ padding: 32, display:'flex', flexDirection:'column', alignItems:'center', height:'100vh', overflowY:'auto' }}>
 
-      <h1>BrightEdge Crux</h1>
+      <h1>BrightEdge CRUX Vitals Dashboard</h1>
 
       <div className='input-container'>
         <div style={{ marginBottom: "8px", padding: 4, paddingInline: 10 }}>
@@ -101,8 +101,8 @@ function App() {
           />
 
           <div style={{ display:'flex', alignItems:'center'}}>
-            <Button variant="contained" sx={{ textTransform: 'none', height:80, borderRadius:4 }} loading={isLoading} onClick={handleSubmit}>
-              Search
+            <Button variant="contained" sx={{ textTransform: 'none', height:80, borderRadius:4 }} onClick={handleSubmit}>
+              {isLoading ? "Loading..." : "Search"}
             </Button>
           </div>
         </div>
@@ -114,10 +114,10 @@ function App() {
       <div className='table-section' style={{ width: '80%', marginTop: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between',alignItems:'center' }}>
           <div>
-            <FilterOptions handleColumn={handleColumn} />
+            {cruxData.length > 0 && <FilterOptions handleColumn={handleColumn} />}
           </div>
           <div>
-            <Button variant="contained" color='error' sx={{ mt: 2, textTransform: 'none' }} onClick={handleClearTable}>
+            <Button variant="contained" disabled={!cruxData.length} color='error' sx={{ mt: 2, textTransform: 'none' }} onClick={handleClearTable}>
               reset data
             </Button>
           </div>
