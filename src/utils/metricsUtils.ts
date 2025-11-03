@@ -5,7 +5,7 @@ import type { CruxRow, MetricKey } from "../types/crux";
 const metrics: MetricKey[] = ["fcp", "lcp", "cls", "inp"];
 
 
-
+//core threshold values for each metric based on Google CWV definition
 export const RANGES = {
   fcp: { good: 1800, ni: 3000 },
   lcp: { good: 2500, ni: 4000 },
@@ -13,7 +13,7 @@ export const RANGES = {
   inp: { good: 200, ni: 500 }
 };
 
-
+// count how many URLs fall in which bucket (good/ NI(need improvement) / poor)
 export const getSummaryCounts = (rows:CruxRow[]) => {
   let good = 0, ni = 0, poor = 0;
 
@@ -26,7 +26,7 @@ export const getSummaryCounts = (rows:CruxRow[]) => {
 
   return { good, ni, poor };
 }
-
+// returns avg value for each metric (only for status=ok)
 export const calculateAverages = (rows: CruxRow[]) => {
 
 
@@ -54,7 +54,7 @@ export const calculateAverages = (rows: CruxRow[]) => {
 };
 
 
-
+//return bar color based on CWC thrsholds
 export const colorScale = (metric: MetricKey, value: number | string | null) => {
   if (value == null) return "grey";
 
@@ -76,6 +76,7 @@ export const percent = (metric: MetricKey, value: number | string | null) => {
   return Math.min(100, (num / ni) * 100);
 };
 
+// text label used in summary counts
 export const ratingText = (metric: keyof typeof RANGES, value: number | string | null) => {
   if (value == null) return "no data";
 
