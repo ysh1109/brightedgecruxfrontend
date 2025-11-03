@@ -11,12 +11,12 @@ const DescriptionModal = React.lazy(() => import("./components/DescriptionModal"
 const Summary = React.lazy(() => import("./components/Summary"));
 
 function App() {
-
+  //column keys we allow filtering to hide and show
   type ColumnKey = "fcp" | "lcp" | "cls" | "inp";
 
   const [input, setInput] = useState("");   // textarea value
-  const [cruxData, setCruxData] = useState<CruxRow[]>([]);
-  const [isLoading, setIsLoading] = useState(false)
+  const [cruxData, setCruxData] = useState<CruxRow[]>([]); //main table data (successful and error objects)
+  const [isLoading, setIsLoading] = useState(false) //loading UI flag
   const [viewData, setViewData] = useState<CruxRow | null>(null);
   const [open, setOpen] = useState(false);
   const [visibleColumn, setVisibleColumn] = useState<Record<ColumnKey, boolean>>({
@@ -40,13 +40,14 @@ function App() {
     setInput('')
   }
   const handleSubmit = () => {
-    // split by new line
     setIsLoading(true)
+    // split by new lines -> multiple URLS support
     const urls = input
       .split("\n")
       .map(u => u.trim())
       .filter(u => u.length > 0);
 
+    //append new results
     api.post("/getCrux", { urls })
       .then(res => {
         setCruxData([...cruxData, ...res.data.data]);
@@ -60,11 +61,12 @@ function App() {
   }
 
   const handleDeleteRow = (id: string | number) => {
-    console.log("handle delete render")
+    //delete single row
     setCruxData(prev => prev.filter(item => item.id !== id));
   };
 
   const handleColumn = (selectedlist: string[]) => {
+    //update visible Columns based on selected filters
     let visibleColumnTemp: any = { ...visibleColumn }
 
     Object.keys(visibleColumn).forEach((col: string) => {
